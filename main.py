@@ -8,6 +8,7 @@ screen = pygame.display.set_mode(size)
 input_rect = pygame.Rect(950,0, 330, 800)
 pygame.display.set_caption('Simulateur bouchons')
 
+
 ####### Mise en forme du texte dans la section options ###
 fontTitre = pygame.font.Font('freesansbold.ttf', 29)
 fontSousTitre = pygame.font.Font('freesansbold.ttf', 20)
@@ -20,14 +21,14 @@ textRect1.center = (1120,60)
 textRect2.center = (1120,30)
 ##############################################################
 
-#### Sprites voiture #######
+#### Sprites voiture ####### Section temporaire avant l'ajout d'un bouton
 voiture = SpriteVoiture(475, 77)
-voiture2 = SpriteVoiture(212,212)
-voiture3 = SpriteVoiture(747,226)
+#voiture2 = SpriteVoiture(212,212)
+#voiture3 = SpriteVoiture(747,226)
 voiture_group = pygame.sprite.Group()
 voiture_group.add(voiture)
-voiture_group.add(voiture2)
-voiture_group.add(voiture3)
+#voiture_group.add(voiture2)
+#voiture_group.add(voiture3)
 #############################
 
 while 1:

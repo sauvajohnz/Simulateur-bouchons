@@ -1,4 +1,5 @@
 import pygame, math
+
 r = 323
 
 class SpriteVoiture(pygame.sprite.Sprite):
@@ -28,6 +29,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
         self.image = self.load_img()
         self.rect = self.image.get_rect(center=(pos_x,pos_y))
         self.rect.center = [pos_x, pos_y]
+        self.vitesse = 30 #en km/h
     def update(self):
         #On fait avancer la voiture
         x = self.rect.center[0]
@@ -35,19 +37,12 @@ class SpriteVoiture(pygame.sprite.Sprite):
         self.rot_img(x,y)
         clock = pygame.time.Clock()
         # print(x,y)
+        t = pygame.time.get_ticks() / 1000
+        w = self.vitesse*2*math.pi/230
 
-        if x >= 125 and x <= 825 and y >= 50 and y <= 750: #On verifie qu'on est bien dans le cercle
-            """On calcule l'angle que fais l'image par rapport au centre du rond point"""
-            if x < 475 and y < 440:
-                angle = math.atan((400-y)/(x-475)) - 2*math.asin(1)
-            else:
-                angle = (2 * math.atan(((400 - y) / r) / (1 + ((x - 475) / r))))
-            print(x,y)
-            print(angle*57.3)
-
-            # On fait avancer la position de l'image 1 degrès plus loin
-            x = r*math.cos(angle - 0.0172665) + 475
-            y = 400 - (r*math.sin(angle - 0.0172665))
-            self.rect.center = [x, y]
+        #Calcul de la position en fonction du temps et de la vitesse
+        x = r*math.cos(-w*t) + 475
+        y = 400 - (r*math.sin(-w*t))
+        self.rect.center = [x, y]
 
 
