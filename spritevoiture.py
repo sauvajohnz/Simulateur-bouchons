@@ -52,7 +52,6 @@ class SpriteVoiture(pygame.sprite.Sprite):
 
     def changevitesse(self, vitesse):
         "modifier la vitesse de la voiture"
-
         if vitesse >= 0 and vitesse != self.vitesse:
             if self.vitesse >= vitesse:
                 self.retard -= (2 * math.pi * pygame.time.get_ticks() / (1000 * 230))*(self.vitesse - vitesse)

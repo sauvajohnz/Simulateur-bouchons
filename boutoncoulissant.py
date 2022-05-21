@@ -20,5 +20,7 @@ class BoutonCoulissant(pygame.sprite.Sprite):
 
     def valeur(self):
         valeur = (self.rect[0] - 960)*40/310
-        if valeur > 0:
+        if valeur > 0 and str(valeur) != 'None':
+            print(valeur)
             return valeur
+        return 0
