@@ -1,23 +1,26 @@
 import pygame, math
 
-r = 323 # rayon du cercle en pixel sur l'application
+r = 323  # rayon du cercle en pixel sur l'application
+
 
 class SpriteVoiture(pygame.sprite.Sprite):
-    def __init__(self, pos_x, pos_y):
+    def __init__(self, phase):
         super().__init__()
         self.couleur = "bleu"
-        self.vitesse = 3 #en km/h
-        self.retard = 0 #Retard/avance accumulé lors de variation de vitesse
+        self.vitesse = 8  # en km/h
+        self.retard = 0  # Retard/avance accumulé lors de variation de vitesse
+        self.phase = phase/57.3 # Phase par rapport aux autres voitures(Seulement pour le départ)
         self.image = self.load_img()
-        self.rect = self.image.get_rect(center=(pos_x, pos_y))
-        self.rect.center = [pos_x, pos_y]
+        self.rect = self.image.get_rect()
+
     def load_img(self):
-        "Permet de load l'image en enlevant les bords blancs genants"
+        """Permet de load l'image en enlevant les bords blancs genants"""
         self.updatecolor()
         img = pygame.image.load(f"spritevoiture_{self.couleur}.png")
         img.set_colorkey((255, 255, 255), pygame.RLEACCEL)
         img = img.convert_alpha()
         return img
+
     def rot_img(self, x, y):
         "permet de faire une rotation de l'image suivant sa position dans le cercle pour donner l'effet qu'elle tourne"
         img = self.load_img()
@@ -32,30 +35,35 @@ class SpriteVoiture(pygame.sprite.Sprite):
         rot_sprite.get_rect().center = loc
         self.image = rot_sprite
         self.rect = self.image.get_rect(center=self.rect.center)
+
     def update(self):
-        #On fait avancer la voiture
+        # On fait avancer la voiture
         x = self.rect.center[0]
         y = self.rect.center[1]
-        self.rot_img(x,y)
+        self.rot_img(x, y)
         clock = pygame.time.Clock()
         # print(x,y)
         t = pygame.time.get_ticks() / 1000
-        w = self.vitesse*2*math.pi/230
-        #Calcul de la position en fonction du temps et de la vitesse
-        x = r*math.cos(-w*t + self.retard) + 475
-        y = 400 - (r*math.sin(-w*t + self.retard))
+        w = self.vitesse * 2 * math.pi / 230
+        # Calcul de la position en fonction du temps et de la vitesse
+        x = r * math.cos(-w * t + self.retard + self.phase) + 475
+        y = 400 - (r * math.sin(-w * t + self.retard + self.phase))
         self.rect.center = [x, y]
+
     def changevitesse(self, vitesse):
         "modifier la vitesse de la voiture"
-        if vitesse >= 0:
+
+        if vitesse >= 0 and vitesse != self.vitesse:
             if self.vitesse >= vitesse:
-                self.retard -= 2 * math.pi * pygame.time.get_ticks() / (1000 * 230)
+                self.retard -= (2 * math.pi * pygame.time.get_ticks() / (1000 * 230))*(self.vitesse - vitesse)
             else:
-                self.retard += 2 * math.pi * pygame.time.get_ticks() / (1000 * 230)
+                self.retard += (2 * math.pi * pygame.time.get_ticks() / (1000 * 230))*(vitesse - self.vitesse)
             self.vitesse = vitesse
+
     def checkvitesse(self):
         "retourne la valeur de la vitesse de la voiture"
         return self.vitesse
+
     def updatecolor(self):
         "change la couleur de la voiture en fonction de sa vitesse"
         if self.vitesse <= 3:
@@ -76,5 +84,3 @@ class SpriteVoiture(pygame.sprite.Sprite):
         # 15-20 km/h: bleu
         # 20-25 km/h: vert clair
         # 25-40 km/h: vert foncé
-
-
