@@ -22,11 +22,11 @@ textRect2.center = (1120,30)
 ##############################################################
 
 #### Sprites voiture ####### Section temporaire avant l'ajout d'un bouton
-voiture = SpriteVoiture(475, 77)
+voiture1 = SpriteVoiture(475, 77)
 #voiture2 = SpriteVoiture(212,212)
 #voiture3 = SpriteVoiture(747,226)
 voiture_group = pygame.sprite.Group()
-voiture_group.add(voiture)
+voiture_group.add(voiture1)
 #voiture_group.add(voiture2)
 #voiture_group.add(voiture3)
 #############################
@@ -38,6 +38,12 @@ while 1:
             #print(event)
             if event.key == 27:
                 sys.exit()
+            if event.key == 1073741906: # fleche haut
+                for voiture in voiture_group.sprites():
+                    voiture.changevitesse(voiture.checkvitesse()+1)
+            if event.key == 1073741905: # fleche bas
+                for voiture in voiture_group.sprites():
+                    voiture.changevitesse(voiture.checkvitesse()-1)
         if event.type == pygame.QUIT:
             sys.exit()
 
