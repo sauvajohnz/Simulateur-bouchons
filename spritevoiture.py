@@ -57,7 +57,15 @@ class SpriteVoiture(pygame.sprite.Sprite):
             if self.vitesse >= vitesse:
                 self.retard -= (2 * math.pi * pygame.time.get_ticks() / (1000 * 230))*(self.vitesse - vitesse)
             else:
+                if self.vitesse <= 5:
+                    vitesse = self.vitesse +0.1
+                elif self.vitesse <= 10:
+                    vitesse = self.vitesse +0.3
+                elif self.vitesse <= 25:
+                    vitesse = self.vitesse + 0.6
+
                 self.retard += (2 * math.pi * pygame.time.get_ticks() / (1000 * 230))*(vitesse - self.vitesse)
+
             self.vitesse = vitesse
 
     def checkvitesse(self):
