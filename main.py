@@ -163,25 +163,22 @@ while 1:
             vitesse_totale += adapter_vitesse_voiture_genante()
     else:
         vitesse_totale += adapter_vitesse_voiture_genante()
-
-
-
     #####################
 
 
-    #######Text Vitesse moyenne#########
+    ##Text Vitesse moyenne##
     clock.tick()  # On update la clock
     textVitesseMoyenne = fontText.render(f"Vitesse moyenne: {round(vitesse_totale/round(boutoncoulissant2.valeur()))}km/h", True, (255, 255, 255), (96, 96, 96))
     textRect6 = (0, 0)
     screen.blit(textVitesseMoyenne, textRect6)
     #######################
 
-    #######Text Remplissage moyen#########
+    #####Text Remplissage#####
     clock.tick()  # On update la clock
-    textRemplMoyen = fontText.render(f"Remplissage moyen: {round(round(boutoncoulissant2.valeur())*4.11*100/82.5)}%", True, (255, 255, 255), (96, 96, 96))
+    textRemplMoyen = fontText.render(f"Remplissage: {round(round(boutoncoulissant2.valeur())*4.11*100/82.5)}%", True, (255, 255, 255), (96, 96, 96))
     textRect7 = (0, 14)
     screen.blit(textRemplMoyen, textRect7)
-    #######################
+    ##########################
 
     pygame.display.flip()
 

@@ -28,9 +28,9 @@ class SpriteVoiture(pygame.sprite.Sprite):
             angle = (math.atan((400 - y) / (475 - x))) * 57.3
         else:
             if y < 200:
-                angle = 90
-            else:
                 angle = -90
+            else:
+                angle = 90
         if x < 475:
             angle += 180
         loc = img.get_rect().center  # rot_image is not defined
