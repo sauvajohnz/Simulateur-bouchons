@@ -97,7 +97,7 @@ while 1:
     ################################
 
     #Bouton vitesse globale#
-    pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(960, 150, 310, 30))
+    screen.blit(pygame.image.load("fond_vitesse_globale.png"), (960,150))
     textVitesseGlobal = fontText.render(f"Vitesse globale demandée({round(boutoncoulissant1.valeur())} km/h)", True, (255, 255, 255), (96, 96, 96))
     textRect3 = textVitesseGlobal.get_rect()
     textRect3.center = (1120, 140)
@@ -105,7 +105,7 @@ while 1:
     #########################
 
     #Bouton nombre vehicules#
-    pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(960, 205, 310, 30))
+    pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(960, 205, 310, 30, width=300))
     textVehiculeGlobal = fontText.render(f"Densité de vehicules({round(boutoncoulissant2.valeur())} vehicules)", True, (255, 255, 255), (96, 96, 96))
     textRect4 = textVehiculeGlobal.get_rect()
     textRect4.center = (1120, 195)
@@ -121,7 +121,7 @@ while 1:
     ########################
 
     # Bouton vitesse vehicule genant#
-    pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(960, 315, 310, 30))
+    screen.blit(pygame.image.load("fond_vitesse_globale.png"), (960,315))
     textVitesseVehiculeGenant = fontText.render(f"Vitesse du vehicule genant({round(boutoncoulissant3.valeur())} km/h)", True, (255, 255, 255), (96, 96, 96))
     textRect6 = textVitesseVehiculeGenant.get_rect()
     textRect6.center = (1120, 305)
@@ -145,7 +145,7 @@ while 1:
         voitures_devant.add(tableau_voitures[i])
         tableau_voitures[i+1].collide(voitures_devant)
     voitures_devant.empty() #On regarde si le premier vehicule rentre en collision avec le dernier
-    if len(tableau_voitures) > 1:
+    if len(tableau_voitures) > 2:
         voitures_devant.add(tableau_voitures[len(tableau_voitures)- 1])
         tableau_voitures[0].collide(voitures_devant)
     #####################

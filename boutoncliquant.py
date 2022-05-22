@@ -15,7 +15,7 @@ class BoutonCliquant(pygame.sprite.Sprite):
     def get_pressed(self, x):
         if self.pressed == False:
             self.pressed = True
-            self.image.fill((96, 96, 96))
+            self.image.fill((0, 0, 0))
         else:
             self.pressed = False
             self.image.fill((255, 255, 255))
