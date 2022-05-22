@@ -150,11 +150,11 @@ while 1:
     voitures_devant.empty() #On regarde si le premier vehicule rentre en collision avec le dernier
     if len(tableau_voitures) > 2:
         voitures_devant.add(tableau_voitures[len(tableau_voitures)- 1])
-        tableau_voitures[0].collide(voitures_devant)
-    if boutoncliquant1.valeur() == True:
-        vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()))
-    else:
-        vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant1.valeur()))
+        if tableau_voitures[0].collide(voitures_devant) == False:
+            if boutoncliquant1.valeur() == True:
+                vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()))
+            else:
+                vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant1.valeur()))
     #####################
 
 
