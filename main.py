@@ -8,6 +8,7 @@ size = width, hight = 1280, 800
 screen = pygame.display.set_mode(size)
 input_rect = pygame.Rect(950,0, 330, 800)
 pygame.display.set_caption('Simulateur bouchons')
+clock = pygame.time.Clock()
 
 
 ####### Mise en forme du texte dans la section options ###
@@ -73,6 +74,15 @@ while 1:
     screen.blit(textOptions, textRect1)
     screen.blit(textSimulateur, textRect2)
 
+    #######Text FPS#########
+    clock.tick()  # On update la clock
+    textFPS = fontText.render(f"FPS: {round(clock.get_fps())}", True, (255, 255, 255), (96, 96, 96))
+    textRect5 = textFPS.get_rect()
+    textRect5.center = (27, 8)
+    screen.blit(textFPS, textRect5)
+    #######################
+
+
     #Design graphique du rond point#
     pygame.draw.circle(screen, (255, 255, 255), (475, 400), 350)
     pygame.draw.circle(screen, (0, 128, 0), (475, 400), 296)
@@ -95,13 +105,14 @@ while 1:
     screen.blit(textVehiculeGlobal, textRect4)
     ########################
 
-    #Ajout des sprites#
+
+    ###Ajout des sprites###
     voiture_group.draw(screen)
     voiture_group.update()
     boutons_group.draw(screen)
     for voiture in voiture_group:
         voiture.changevitesse(round(boutoncoulissant1.valeur()))
     pygame.display.flip()
-    ###################
+    #######################
 
 
