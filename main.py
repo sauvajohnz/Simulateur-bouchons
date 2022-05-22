@@ -147,7 +147,7 @@ while 1:
     voitures_devant.empty() #On regarde si le premier vehicule rentre en collision avec le dernier
     if len(tableau_voitures) > 1:
         voitures_devant.add(tableau_voitures[len(tableau_voitures)- 1])
-    tableau_voitures[0].collide(voitures_devant)
+        tableau_voitures[0].collide(voitures_devant)
     #####################
 
     #####Vitesse#####
