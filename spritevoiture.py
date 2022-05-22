@@ -99,3 +99,5 @@ class SpriteVoiture(pygame.sprite.Sprite):
         if pygame.sprite.spritecollide(self, spriteGroup, False):
             self.collision = True
             self.changevitesse(0)
+            return True
+        return False

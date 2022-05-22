@@ -138,28 +138,25 @@ while 1:
 
     #####Collisions######
     tableau_voitures = []
+    vitesse_totale = 0
     for voiture in voiture_group:
         tableau_voitures.append(voiture)
     voitures_devant = pygame.sprite.Group() #On regarde pour chaque vehicule s'il rentre en collision avec celui de devant
     for i in range(len(tableau_voitures)-1):
         voitures_devant.empty()
         voitures_devant.add(tableau_voitures[i])
-        tableau_voitures[i+1].collide(voitures_devant)
+        if tableau_voitures[i+1].collide(voitures_devant) == False:
+            vitesse_totale += tableau_voitures[i+1].changevitesse(round(boutoncoulissant1.valeur()))
     voitures_devant.empty() #On regarde si le premier vehicule rentre en collision avec le dernier
     if len(tableau_voitures) > 2:
         voitures_devant.add(tableau_voitures[len(tableau_voitures)- 1])
         tableau_voitures[0].collide(voitures_devant)
+    if boutoncliquant1.valeur() == True:
+        vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()))
+    else:
+        vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant1.valeur()))
     #####################
 
-    #####Vitesse#####
-    vitesse_totale = 0
-    for voiture in voiture_group:  # On distingue le vehicule genant des autres vehicules
-        if voiture == tableau_voitures[0] and boutoncliquant1.valeur() == True:
-            vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()))
-
-        else:
-            vitesse_totale += voiture.changevitesse(round(boutoncoulissant1.valeur()))
-    ######################
 
     #######Text Vitesse moyenne#########
     clock.tick()  # On update la clock
