@@ -7,6 +7,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
     def __init__(self, phase):
         super().__init__()
         self.couleur = "bleu"
+        self.genant = False
         self.vitesse = 8  # en km/h
         self.retard = 0  # Retard/avance accumulé lors de variation de vitesse
         self.phase = phase/57.3 # Phase par rapport aux autres voitures(Seulement pour le départ)
@@ -43,6 +44,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
         self.rot_img(x, y)
         clock = pygame.time.Clock()
         # print(x,y)
+        self.collision = False
         t = pygame.time.get_ticks() / 1000
         w = self.vitesse * 2 * math.pi / 230
         # Calcul de la position en fonction du temps et de la vitesse
@@ -62,6 +64,14 @@ class SpriteVoiture(pygame.sprite.Sprite):
     def checkvitesse(self):
         "retourne la valeur de la vitesse de la voiture"
         return self.vitesse
+
+    def checkgenant(self):
+        "retourne s'il est le vehicule genant ou non"
+        return self.genant
+
+    def changegenant(self, genant):
+        "modifie le fait qu'il soit genant ou non"
+        self.genant = genant
 
     def updatecolor(self):
         "change la couleur de la voiture en fonction de sa vitesse"
@@ -83,3 +93,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
         # 15-20 km/h: bleu
         # 20-25 km/h: vert clair
         # 25-40 km/h: vert foncé
+    def collide(self, spriteGroup):
+        if pygame.sprite.spritecollide(self, spriteGroup, False):
+            self.collision = True
+            self.changevitesse(0)

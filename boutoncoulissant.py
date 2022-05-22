@@ -3,16 +3,15 @@ import pygame
 #y€[150,180] cad 30
 
 class BoutonCoulissant(pygame.sprite.Sprite):
-    def __init__(self, pos_y, valeur_max, valeur_init):
+    def __init__(self, pos_y, valeur_max, valeur_init, xmax = 1270, thickness = 7):
         super().__init__()
         self.y = pos_y
         self.valeur_max = valeur_max
         self.pos_init = ((valeur_init*310)/valeur_max) + 960
-        self.image = pygame.Surface([7, 25])
+        self.image = pygame.Surface([thickness, 25])
         self.image.fill((96,96,96))
         self.rect = self.image.get_rect()
         self.rect.center = [self.pos_init, pos_y]
-        self.pressed = False
 
     def get_pressed(self, x):
         self.rect.center = [x, self.y]

@@ -1,6 +1,7 @@
 import sys, pygame
 from spritevoiture import SpriteVoiture
 from boutoncoulissant import BoutonCoulissant
+from boutoncliquant import BoutonCliquant
 pygame.init()
 
 
@@ -29,20 +30,28 @@ textRect2.center = (1120,30)
 #####################Ajout des sprites#######################
 #Les voitures(Fonction car on peut demander a changer le nombre de voitures)
 voiture_group = pygame.sprite.Group()
+voiture1 = SpriteVoiture(0)
+voiture_group.add(voiture1)
 voiture_init = 2 # Nbr de voitures au lancement du programme
+tableau_voitures = []
 def placer_vehicules(nbr):
     voiture_group.empty()
     for i in range(nbr):
-        voiture = SpriteVoiture((360/nbr)*i)
+        voiture = SpriteVoiture((360/nbr)*(i))
         voiture_group.add(voiture)
+        tableau_voitures.append(voiture)
 placer_vehicules(voiture_init)
 
 #Les boutons
 boutons_group = pygame.sprite.Group()
-boutoncoulissant1 = BoutonCoulissant(164.5, 40, 30)
-boutoncoulissant2 = BoutonCoulissant(219.5, 17, voiture_init)
+boutoncoulissant1 = BoutonCoulissant(164.5, 40, 30) #Vitesse globale demandee
+boutoncoulissant2 = BoutonCoulissant(219.5, 17, voiture_init) #Densité vehicules
+boutoncoulissant3 = BoutonCoulissant(329.5, 40, 30) #Vitesse vehicule genant
+boutoncoulissant4 = BoutonCliquant(274.5, False) #Activer vehicule genant
 boutons_group.add(boutoncoulissant1)
 boutons_group.add(boutoncoulissant2)
+boutons_group.add(boutoncoulissant3)
+boutons_group.add(boutoncoulissant4)
 #############################################################
 
 
@@ -53,19 +62,17 @@ while 1:
             #print(event)
             if event.key == 27:
                 sys.exit()
-            if event.key == 1073741906: # fleche haut
-                for voiture in voiture_group.sprites():
-                    voiture.changevitesse(voiture.checkvitesse()+1)
-            if event.key == 1073741905: # fleche bas
-                for voiture in voiture_group.sprites():
-                    voiture.changevitesse(voiture.checkvitesse()-1)
-        if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONUP :
             x, y = pygame.mouse.get_pos()
             if x > 960 and x < 1270 and y < 180 and y > 150:  # Bouton vitesse globale
                 boutoncoulissant1.get_pressed(x)
             elif x > 960 and x < 1270 and y < 235 and y > 205: # Bouton nombre vehicules
                 boutoncoulissant2.get_pressed(x)
                 placer_vehicules(round(boutoncoulissant2.valeur()))
+            elif x > 960 and x < 992 and y < 290 and y > 260:  # Bouton vitesse globale
+                boutoncoulissant4.get_pressed(x)
+            elif x > 960 and x < 1270 and y < 345 and y > 315:
+                boutoncoulissant3.get_pressed(x)
         if event.type == pygame.QUIT:
             sys.exit()
 
@@ -105,14 +112,53 @@ while 1:
     screen.blit(textVehiculeGlobal, textRect4)
     ########################
 
+    #Bouton activer vebicule genant#
+    pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(960, 260, 32, 30))
+    textVehiculeGenant = fontText.render(f"Activer vehicule genant", True,(255, 255, 255), (96, 96, 96))
+    textRect5 = textVehiculeGenant.get_rect()
+    textRect5.center = (1120, 275)
+    screen.blit(textVehiculeGenant, textRect5)
+    ########################
+
+    # Bouton vitesse vehicule genant#
+    pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(960, 315, 310, 30))
+    textVitesseVehiculeGenant = fontText.render(f"Vitesse du vehicule genant({round(boutoncoulissant3.valeur())} km/h)", True, (255, 255, 255), (96, 96, 96))
+    textRect6 = textVitesseVehiculeGenant.get_rect()
+    textRect6.center = (1120, 305)
+    screen.blit(textVitesseVehiculeGenant, textRect6)
+    ########################
+
 
     ###Ajout des sprites###
     voiture_group.draw(screen)
     voiture_group.update()
     boutons_group.draw(screen)
+    #####################
+
+    #####Collisions#####
     for voiture in voiture_group:
-        voiture.changevitesse(round(boutoncoulissant1.valeur()))
+        if voiture == tableau_voitures[0] and boutoncoulissant4.valeur() == True:
+            tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()))
+        else:
+            voiture.changevitesse(round(boutoncoulissant1.valeur()))
+    tableau_voitures = []
+    for voiture in voiture_group:
+        tableau_voitures.append(voiture)
+    voitures_devant = pygame.sprite.Group()
+    for i in range(len(tableau_voitures)-1):
+        voitures_devant.empty()
+        voitures_devant.add(tableau_voitures[i])
+        tableau_voitures[i+1].collide(voitures_devant)
+    voitures_devant.empty()
+    voitures_devant.add(tableau_voitures[len(tableau_voitures)- 1])
+    tableau_voitures[0].collide(voitures_devant)
+
+    #####################
+
+
     pygame.display.flip()
-    #######################
+
+    ##Experimental
+
 
 
