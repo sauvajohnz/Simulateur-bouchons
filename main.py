@@ -56,11 +56,13 @@ boutons_group.add(boutoncoulissant3)
 boutons_group.add(boutoncliquant1)
 #############################################################
 
-def adapter_vitesse_voiture_genante(vitesse_totale):
+def adapter_vitesse_voiture_genante():
+    vitesse_totale = 0
     if boutoncliquant1.valeur() == True:
         vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()))
     else:
         vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant1.valeur()))
+    return vitesse_totale
 
 
 
@@ -158,9 +160,9 @@ while 1:
     if len(tableau_voitures) > 2:
         voitures_devant.add(tableau_voitures[len(tableau_voitures)- 1])
         if tableau_voitures[0].collide(voitures_devant) == False:
-            adapter_vitesse_voiture_genante(vitesse_totale)
+            vitesse_totale += adapter_vitesse_voiture_genante()
     else:
-        adapter_vitesse_voiture_genante(vitesse_totale)
+        vitesse_totale += adapter_vitesse_voiture_genante()
 
 
 
