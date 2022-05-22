@@ -86,8 +86,7 @@ while 1:
     #######Text FPS#########
     clock.tick()  # On update la clock
     textFPS = fontText.render(f"FPS: {round(clock.get_fps())}", True, (255, 255, 255), (96, 96, 96))
-    textRect5 = textFPS.get_rect()
-    textRect5.center = (29, 8)
+    textRect5 = (0, 30)
     screen.blit(textFPS, textRect5)
     #######################
 
@@ -165,16 +164,14 @@ while 1:
     #######Text Vitesse moyenne#########
     clock.tick()  # On update la clock
     textVitesseMoyenne = fontText.render(f"Vitesse moyenne: {round(vitesse_totale/boutoncoulissant2.valeur())}km/h", True, (255, 255, 255), (96, 96, 96))
-    textRect6 = textVitesseMoyenne.get_rect()
-    textRect6.center = (90, 20)
+    textRect6 = (0, 0)
     screen.blit(textVitesseMoyenne, textRect6)
     #######################
 
     #######Text Remplissage moyen#########
     clock.tick()  # On update la clock
-    textRemplMoyen = fontText.render(f"Remplissage moyen: {round(boutoncoulissant2.valeur()*4.11*100/79)}%", True, (255, 255, 255), (96, 96, 96))
-    textRect7 = textRemplMoyen.get_rect()
-    textRect7.center = (86, 34)
+    textRemplMoyen = fontText.render(f"Remplissage moyen: {round(boutoncoulissant2.valeur()*4.11*100/75)}%", True, (255, 255, 255), (96, 96, 96))
+    textRect7 = (0, 14)
     screen.blit(textRemplMoyen, textRect7)
     #######################
 
