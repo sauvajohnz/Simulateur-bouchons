@@ -47,7 +47,7 @@ placer_vehicules(voiture_init)
 #Les boutons
 boutons_group = pygame.sprite.Group()
 boutoncoulissant1 = BoutonCoulissant(164.5, 40, 30) #Vitesse globale demandee
-boutoncoulissant2 = BoutonCoulissant(219.5, 17, voiture_init) #Densité vehicules
+boutoncoulissant2 = BoutonCoulissant(219.5, 20, voiture_init) #Densité vehicules
 boutoncoulissant3 = BoutonCoulissant(329.5, 40, 30) #Vitesse vehicule genant
 boutoncliquant1 = BoutonCliquant(274.5, False) #Activer vehicule genant
 boutons_group.add(boutoncoulissant1)
@@ -170,11 +170,10 @@ while 1:
 
     #######Text Remplissage moyen#########
     clock.tick()  # On update la clock
-    textRemplMoyen = fontText.render(f"Remplissage moyen: {round(boutoncoulissant2.valeur()*4.11*100/75)}%", True, (255, 255, 255), (96, 96, 96))
+    textRemplMoyen = fontText.render(f"Remplissage moyen: {round(round(boutoncoulissant2.valeur())*4.11*100/82.5)}%", True, (255, 255, 255), (96, 96, 96))
     textRect7 = (0, 14)
     screen.blit(textRemplMoyen, textRect7)
     #######################
-
 
     pygame.display.flip()
 
