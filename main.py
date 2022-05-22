@@ -9,6 +9,8 @@ size = width, hight = 1280, 800
 screen = pygame.display.set_mode(size)
 input_rect = pygame.Rect(950,0, 330, 800)
 pygame.display.set_caption('Simulateur bouchons')
+icon = pygame.image.load("icon.png")
+pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
 
 
