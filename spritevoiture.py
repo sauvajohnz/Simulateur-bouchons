@@ -68,9 +68,9 @@ class SpriteVoiture(pygame.sprite.Sprite):
                     vitesse = self.vitesse + 0.6
 
                 self.retard += (2 * math.pi * pygame.time.get_ticks() / (1000 * 230))*(vitesse - self.vitesse)
-
             self.vitesse = vitesse
-
+            return int(self.vitesse)
+        return vitesse
     def checkvitesse(self):
         "retourne la valeur de la vitesse de la voiture"
         return self.vitesse
