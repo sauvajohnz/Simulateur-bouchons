@@ -7,7 +7,6 @@ class SpriteVoiture(pygame.sprite.Sprite):
     def __init__(self, phase):
         super().__init__()
         self.couleur = "bleu"
-        self.genant = False
         self.vitesse = 8  # en km/h
         self.retard = 0  # Retard/avance accumulé lors de variation de vitesse
         self.phase = phase/57.3 # Phase par rapport aux autres voitures(Seulement pour le départ)
@@ -64,14 +63,6 @@ class SpriteVoiture(pygame.sprite.Sprite):
     def checkvitesse(self):
         "retourne la valeur de la vitesse de la voiture"
         return self.vitesse
-
-    def checkgenant(self):
-        "retourne s'il est le vehicule genant ou non"
-        return self.genant
-
-    def changegenant(self, genant):
-        "modifie le fait qu'il soit genant ou non"
-        self.genant = genant
 
     def updatecolor(self):
         "change la couleur de la voiture en fonction de sa vitesse"
