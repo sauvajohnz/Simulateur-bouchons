@@ -160,7 +160,7 @@ while 1:
 
     #######Text Vitesse moyenne#########
     clock.tick()  # On update la clock
-    textVitesseMoyenne = fontText.render(f"Vitesse moyenne: {round(vitesse_totale/boutoncoulissant2.valeur())}km/h", True, (255, 255, 255), (96, 96, 96))
+    textVitesseMoyenne = fontText.render(f"Vitesse moyenne: {round(vitesse_totale/round(boutoncoulissant2.valeur()))}km/h", True, (255, 255, 255), (96, 96, 96))
     textRect6 = (0, 0)
     screen.blit(textVitesseMoyenne, textRect6)
     #######################
