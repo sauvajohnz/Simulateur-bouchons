@@ -17,7 +17,7 @@ class BoutonCoulissant(pygame.sprite.Sprite):
         self.rect.center = [x, self.y]
 
     def valeur(self):
-        valeur = (self.rect[0] - 960)*self.valeur_max/310
+        valeur = (self.rect[0] - 960)*self.valeur_max/310 #Règle de trois, permettant de renvoyer la valeur du bouton
         if valeur > 0 and str(valeur) != 'None':
             return valeur
         return 0

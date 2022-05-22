@@ -95,8 +95,7 @@ while 1:
     #######Text FPS#########
     clock.tick()  # On update la clock
     textFPS = fontText.render(f"FPS: {round(clock.get_fps())}", True, (255, 255, 255), (96, 96, 96))
-    textRect5 = (0, 30)
-    screen.blit(textFPS, textRect5)
+    screen.blit(textFPS, (0,30))
     #######################
 
 
@@ -147,8 +146,8 @@ while 1:
 
     #####Collisions######
     tableau_voitures = []
-    vitesse_totale = 0
-    for voiture in voiture_group:
+    vitesse_totale = 0 #Permet de faire une moyenne de la vitesse
+    for voiture in voiture_group: #On créer un tableau de tous les véhicules
         tableau_voitures.append(voiture)
     voitures_devant = pygame.sprite.Group() #On regarde pour chaque vehicule s'il rentre en collision avec celui de devant
     for i in range(len(tableau_voitures)-1):
@@ -159,7 +158,7 @@ while 1:
     voitures_devant.empty() #On regarde si le premier vehicule rentre en collision avec le dernier
     if len(tableau_voitures) > 2:
         voitures_devant.add(tableau_voitures[len(tableau_voitures)- 1])
-        if tableau_voitures[0].collide(voitures_devant) == False:
+        if tableau_voitures[0].collide(voitures_devant) == False: #Si il n'y a pas collision, on peut augmenter la vitesse
             vitesse_totale += adapter_vitesse_voiture_genante()
     else:
         vitesse_totale += adapter_vitesse_voiture_genante()
@@ -167,17 +166,13 @@ while 1:
 
 
     ##Text Vitesse moyenne##
-    clock.tick()  # On update la clock
     textVitesseMoyenne = fontText.render(f"Vitesse moyenne: {round(vitesse_totale/round(boutoncoulissant2.valeur()))}km/h", True, (255, 255, 255), (96, 96, 96))
-    textRect6 = (0, 0)
-    screen.blit(textVitesseMoyenne, textRect6)
+    screen.blit(textVitesseMoyenne, (0,0))
     #######################
 
     #####Text Remplissage#####
-    clock.tick()  # On update la clock
     textRemplMoyen = fontText.render(f"Remplissage: {round(round(boutoncoulissant2.valeur())*4.11*100/82.5)}%", True, (255, 255, 255), (96, 96, 96))
-    textRect7 = (0, 14)
-    screen.blit(textRemplMoyen, textRect7)
+    screen.blit(textRemplMoyen, (0, 14))
     ##########################
 
     pygame.display.flip()

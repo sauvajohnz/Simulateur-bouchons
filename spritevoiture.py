@@ -7,7 +7,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
     def __init__(self, phase):
         super().__init__()
         self.couleur = "bleu"
-        self.vitesse = 8  # en km/h
+        self.vitesse = 30  # en km/h
         self.retard = 0  # Retard/avance accumulé lors de variation de vitesse
         self.phase = phase/57.3 # Phase par rapport aux autres voitures(Seulement pour le départ)
         self.image = self.load_img()
@@ -26,17 +26,15 @@ class SpriteVoiture(pygame.sprite.Sprite):
         img = self.load_img()
         if x != 475:
             angle = (math.atan((400 - y) / (475 - x))) * 57.3
-        else:
+        else:#Dans ce cas on est aux pôles du cercle, on ne peut pas diviser par 0 alors on le fait manuellement
             if y < 200:
                 angle = -90
             else:
                 angle = 90
         if x < 475:
             angle += 180
-        loc = img.get_rect().center  # rot_image is not defined
-        rot_sprite = pygame.transform.rotate(img, 270 - angle)
-        rot_sprite.get_rect().center = loc
-        self.image = rot_sprite
+        #On fait une rotation d'image par rapport au centre
+        self.image = pygame.transform.rotate(img, 270 - angle)
         self.rect = self.image.get_rect(center=self.rect.center)
 
     def update(self):
@@ -46,7 +44,6 @@ class SpriteVoiture(pygame.sprite.Sprite):
         self.rot_img(x, y)
         clock = pygame.time.Clock()
         # print(x,y)
-        self.collision = False
         t = pygame.time.get_ticks() / 1000
         w = self.vitesse * 2 * math.pi / 230
         # Calcul de la position en fonction du temps et de la vitesse
@@ -97,7 +94,6 @@ class SpriteVoiture(pygame.sprite.Sprite):
         # 25-40 km/h: vert foncé
     def collide(self, spriteGroup):
         if pygame.sprite.spritecollide(self, spriteGroup, False):
-            self.collision = True
             self.changevitesse(0)
             return True
         return False
