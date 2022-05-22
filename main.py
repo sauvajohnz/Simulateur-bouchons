@@ -22,22 +22,28 @@ textRect2 = textSimulateur.get_rect()
 
 textRect1.center = (1120,60)
 textRect2.center = (1120,30)
-##############################################################
+#############################################################
 
 
-#### Sprites voiture ####### Section temporaire avant l'ajout d'un bouton
-voiture1 = SpriteVoiture(0)
-voiture2 = SpriteVoiture(180)
-#voiture3 = SpriteVoiture(747,226)
+#####################Ajout des sprites#######################
+#Les voitures(Fonction car on peut demander a changer le nombre de voitures)
 voiture_group = pygame.sprite.Group()
-voiture_group.add(voiture1)
-voiture_group.add(voiture2)
-#voiture_group.add(voiture3)
-#############################
+voiture_init = 2 # Nbr de voitures au lancement du programme
+def placer_vehicules(nbr):
+    voiture_group.empty()
+    for i in range(nbr):
+        voiture = SpriteVoiture((360/nbr)*i)
+        voiture_group.add(voiture)
+placer_vehicules(voiture_init)
 
+#Les boutons
 boutons_group = pygame.sprite.Group()
-boutoncoulissant1 = BoutonCoulissant(1100,160)
+boutoncoulissant1 = BoutonCoulissant(164.5, 40, 30)
+boutoncoulissant2 = BoutonCoulissant(219.5, 17, voiture_init)
 boutons_group.add(boutoncoulissant1)
+boutons_group.add(boutoncoulissant2)
+#############################################################
+
 
 while 1:
     for event in pygame.event.get():
@@ -54,8 +60,11 @@ while 1:
                     voiture.changevitesse(voiture.checkvitesse()-1)
         if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEBUTTONDOWN:
             x, y = pygame.mouse.get_pos()
-            if x > 960 and x < 1270 and y < 180 and y > 150:  # Si la souris est dans le carré
+            if x > 960 and x < 1270 and y < 180 and y > 150:  # Bouton vitesse globale
                 boutoncoulissant1.get_pressed(x)
+            elif x > 960 and x < 1270 and y < 235 and y > 205: # Bouton nombre vehicules
+                boutoncoulissant2.get_pressed(x)
+                placer_vehicules(round(boutoncoulissant2.valeur()))
         if event.type == pygame.QUIT:
             sys.exit()
 
@@ -78,12 +87,21 @@ while 1:
     screen.blit(textVitesseGlobal, textRect3)
     #########################
 
+    #Bouton nombre vehicules#
+    pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(960, 205, 310, 30))
+    textVehiculeGlobal = fontText.render(f"Densité de vehicules({round(boutoncoulissant2.valeur())} vehicules)", True, (255, 255, 255), (96, 96, 96))
+    textRect4 = textVehiculeGlobal.get_rect()
+    textRect4.center = (1120, 195)
+    screen.blit(textVehiculeGlobal, textRect4)
+    ########################
 
+    #Ajout des sprites#
     voiture_group.draw(screen)
     voiture_group.update()
     boutons_group.draw(screen)
     for voiture in voiture_group:
         voiture.changevitesse(round(boutoncoulissant1.valeur()))
     pygame.display.flip()
+    ###################
 
 
