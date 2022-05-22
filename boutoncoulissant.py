@@ -11,16 +11,11 @@ class BoutonCoulissant(pygame.sprite.Sprite):
         self.rect.center = [1220, 164.5]
         self.pressed = False
 
-    def update(self):
-        x, y = pygame.mouse.get_pos()
-        if x > 960 and x < 1270 and y < 180 and y > 150: #Si la souris est dans le carré
-            for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONUP:
-                    self.rect.center = [x, 164.5]
+    def get_pressed(self, x):
+        self.rect.center = [x, 164.5]
 
     def valeur(self):
         valeur = (self.rect[0] - 960)*40/310
         if valeur > 0 and str(valeur) != 'None':
-            print(valeur)
             return valeur
         return 0

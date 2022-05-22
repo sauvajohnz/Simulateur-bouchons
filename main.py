@@ -17,14 +17,13 @@ fontText = pygame.font.Font('freesansbold.ttf', 15)
 
 textOptions = fontSousTitre.render('Options', True, (255,255,255), (96,96,96))
 textSimulateur = fontTitre.render('Simulateur bouchons', True, (255,255,255), (96,96,96))
-textVitesseGlobal = fontText.render("Vitesse globale demandée", True, (255,255,255), (96,96,96))
 textRect1 = textOptions.get_rect()
 textRect2 = textSimulateur.get_rect()
-textRect3 = textVitesseGlobal.get_rect()
+
 textRect1.center = (1120,60)
 textRect2.center = (1120,30)
-textRect3.center = (1120, 140)
 ##############################################################
+
 
 #### Sprites voiture ####### Section temporaire avant l'ajout d'un bouton
 voiture1 = SpriteVoiture(0)
@@ -53,6 +52,10 @@ while 1:
             if event.key == 1073741905: # fleche bas
                 for voiture in voiture_group.sprites():
                     voiture.changevitesse(voiture.checkvitesse()-1)
+        if event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = pygame.mouse.get_pos()
+            if x > 960 and x < 1270 and y < 180 and y > 150:  # Si la souris est dans le carré
+                boutoncoulissant1.get_pressed(x)
         if event.type == pygame.QUIT:
             sys.exit()
 
@@ -60,7 +63,6 @@ while 1:
     pygame.draw.rect(screen, (96, 96, 96), input_rect)
     screen.blit(textOptions, textRect1)
     screen.blit(textSimulateur, textRect2)
-    screen.blit(textVitesseGlobal, textRect3)
 
     #Design graphique du rond point#
     pygame.draw.circle(screen, (255, 255, 255), (475, 400), 350)
@@ -68,13 +70,18 @@ while 1:
     pygame.draw.arc(screen, (0, 0, 0), (150, 80, 650, 643), 0, 360)
     ################################
 
+    #Bouton vitesse globale#
     pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(960, 150, 310, 30))
+    textVitesseGlobal = fontText.render(f"Vitesse globale demandée({round(boutoncoulissant1.valeur())} km/h)", True, (255, 255, 255), (96, 96, 96))
+    textRect3 = textVitesseGlobal.get_rect()
+    textRect3.center = (1120, 140)
+    screen.blit(textVitesseGlobal, textRect3)
+    #########################
 
 
     voiture_group.draw(screen)
     voiture_group.update()
     boutons_group.draw(screen)
-    boutons_group.update()
     for voiture in voiture_group:
         voiture.changevitesse(round(boutoncoulissant1.valeur()))
     pygame.display.flip()
