@@ -155,6 +155,14 @@ while 1:
                 vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()))
             else:
                 vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant1.valeur()))
+    else:
+        if boutoncliquant1.valeur() == True:
+            vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()))
+        else:
+            vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant1.valeur()))
+
+
+
     #####################
 
 
