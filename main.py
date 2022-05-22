@@ -47,11 +47,11 @@ boutons_group = pygame.sprite.Group()
 boutoncoulissant1 = BoutonCoulissant(164.5, 40, 30) #Vitesse globale demandee
 boutoncoulissant2 = BoutonCoulissant(219.5, 17, voiture_init) #Densité vehicules
 boutoncoulissant3 = BoutonCoulissant(329.5, 40, 30) #Vitesse vehicule genant
-boutoncoulissant4 = BoutonCliquant(274.5, False) #Activer vehicule genant
+boutoncliquant1 = BoutonCliquant(274.5, False) #Activer vehicule genant
 boutons_group.add(boutoncoulissant1)
 boutons_group.add(boutoncoulissant2)
 boutons_group.add(boutoncoulissant3)
-boutons_group.add(boutoncoulissant4)
+boutons_group.add(boutoncliquant1)
 #############################################################
 
 
@@ -70,7 +70,7 @@ while 1:
                 boutoncoulissant2.get_pressed(x)
                 placer_vehicules(round(boutoncoulissant2.valeur()))
             elif x > 960 and x < 992 and y < 290 and y > 260:  # Bouton vitesse globale
-                boutoncoulissant4.get_pressed(x)
+                boutoncliquant1.get_pressed(x)
             elif x > 960 and x < 1270 and y < 345 and y > 315:
                 boutoncoulissant3.get_pressed(x)
         if event.type == pygame.QUIT:
@@ -135,30 +135,30 @@ while 1:
     boutons_group.draw(screen)
     #####################
 
-    #####Collisions#####
-    for voiture in voiture_group:
-        if voiture == tableau_voitures[0] and boutoncoulissant4.valeur() == True:
+    #####Vitesse#####
+    for voiture in voiture_group: #On distingue le vehicule genant des autres vehicules
+        if voiture == tableau_voitures[0] and boutoncliquant1.valeur() == True:
             tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()))
         else:
             voiture.changevitesse(round(boutoncoulissant1.valeur()))
+    ######################
+
+    #####Collisions######
     tableau_voitures = []
     for voiture in voiture_group:
         tableau_voitures.append(voiture)
-    voitures_devant = pygame.sprite.Group()
+    voitures_devant = pygame.sprite.Group() #On regarde pour chaque vehicule s'il rentre en collision avec celui de devant
     for i in range(len(tableau_voitures)-1):
         voitures_devant.empty()
         voitures_devant.add(tableau_voitures[i])
         tableau_voitures[i+1].collide(voitures_devant)
-    voitures_devant.empty()
+    voitures_devant.empty() #On regarde si le premier vehicule rentre en collision avec le dernier
     voitures_devant.add(tableau_voitures[len(tableau_voitures)- 1])
     tableau_voitures[0].collide(voitures_devant)
-
     #####################
 
 
     pygame.display.flip()
-
-    ##Experimental
 
 
 
