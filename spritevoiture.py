@@ -4,8 +4,10 @@ r = 323  # rayon du cercle en pixel sur l'application
 
 
 class SpriteVoiture(pygame.sprite.Sprite):
-    def __init__(self, phase):
+    def __init__(self, phase, diametre):
         super().__init__()
+        self.diametre = diametre #Diametre du rond point
+        self.circ = 468.54* math.pow(round(diametre*math.pi/4.2), -0.9711) # Longueur de la largeur de la bordure du rond point(pour redimensionner la voiture)
         self.couleur = "bleu"
         self.vitesse = 30  # en km/h
         self.retard = 0  # Retard/avance accumulé lors de variation de vitesse
@@ -17,6 +19,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
         """Permet de load l'image en enlevant les bords blancs genants"""
         self.updatecolor()
         img = pygame.image.load(f"images/spritevoiture_{self.couleur}.png")
+        img = pygame.transform.scale(img, (self.circ*4, self.circ*2))
         img.set_colorkey((255, 255, 255), pygame.RLEACCEL)
         img = img.convert_alpha()
         return img
@@ -45,7 +48,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
         clock = pygame.time.Clock()
         # print(x,y)
         t = pygame.time.get_ticks() / 1000
-        w = self.vitesse * 2 * math.pi / 230
+        w = self.vitesse * 2 / (self.diametre * 3.6 )
         # Calcul de la position en fonction du temps et de la vitesse
         x = r * math.cos(-w * t + self.retard + self.phase) + 475
         y = 400 - (r * math.sin(-w * t + self.retard + self.phase))
@@ -55,7 +58,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
         "modifier la vitesse de la voiture"
         if vitesse >= 0 and vitesse != self.vitesse:
             if self.vitesse >= vitesse:
-                self.retard -= (2 * math.pi * pygame.time.get_ticks() / (1000 * 230))*(self.vitesse - vitesse)
+                self.retard -= (2 * pygame.time.get_ticks() / (1000 * self.diametre * 3.6))*(self.vitesse - vitesse)
             else:
                 if self.vitesse <= 5:
                     vitesse = self.vitesse +0.1
@@ -64,7 +67,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
                 elif self.vitesse <= 25:
                     vitesse = self.vitesse + 0.6
 
-                self.retard += (2 * math.pi * pygame.time.get_ticks() / (1000 * 230))*(vitesse - self.vitesse)
+                self.retard += (2 * pygame.time.get_ticks() / (1000 * self.diametre * 3.6))*(vitesse - self.vitesse)
             self.vitesse = vitesse
             return int(self.vitesse)
         return vitesse

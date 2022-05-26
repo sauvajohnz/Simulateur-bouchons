@@ -2,7 +2,11 @@ import sys, pygame
 from spritevoiture import SpriteVoiture
 from boutoncoulissant import BoutonCoulissant
 from boutoncliquant import BoutonCliquant
+from math import pow
 pygame.init()
+#To do:
+# - Optimiser l'espace de rajout des options en mettant le code dans les class
+
 
 ###Mise en forme globale de l'application###
 size = width, hight = 1280, 800
@@ -12,8 +16,6 @@ pygame.display.set_caption('Simulateur bouchons')
 icon = pygame.image.load("images/icon.png")
 pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
-diametre_rdpt = 26,10 #en mètre
-circ = diametre_rdpt*3,1419
 
 
 ####### Mise en forme du texte dans la section options ###
@@ -34,27 +36,31 @@ textRect2.center = (1120,30)
 #####################Ajout des sprites#######################
 #Les voitures
 voiture_group = pygame.sprite.Group()
-voiture_init = 2 # Nbr de voitures au lancement du programme
+voiture_init = 50 # Nbr de voitures au lancement du programme
+diametre_init = 26.1
 tableau_voitures = []
-def placer_vehicules(nbr):
+def placer_vehicules(nbr_vehicules_pourcent, diametre):
     "Fonction qui ajoute les voitures en fonction de la densitée demandée"
     voiture_group.empty()
+    nbr = round((diametre*3.141/4.2)*nbr_vehicules_pourcent/100)
     for i in range(nbr):
-        voiture = SpriteVoiture((360/nbr)*(i))
+        voiture = SpriteVoiture((360/nbr)*(i), diametre)
         voiture_group.add(voiture)
         tableau_voitures.append(voiture)
-placer_vehicules(voiture_init)
+placer_vehicules(voiture_init, diametre_init)
 
 #Les boutons
 boutons_group = pygame.sprite.Group()
 boutoncoulissant1 = BoutonCoulissant(164.5, 40, 30) #Vitesse globale demandee
-boutoncoulissant2 = BoutonCoulissant(219.5, 20, voiture_init) #Densité vehicules
+boutoncoulissant2 = BoutonCoulissant(219.5, 100, voiture_init) #Densité vehicules
 boutoncoulissant3 = BoutonCoulissant(329.5, 40, 30) #Vitesse vehicule genant
 boutoncliquant1 = BoutonCliquant(274.5, False) #Activer vehicule genant
+boutoncoulissant4 = BoutonCoulissant(385.5, 180, diametre_init, valeur_min=10) #Diametre rond point
 boutons_group.add(boutoncoulissant1)
 boutons_group.add(boutoncoulissant2)
 boutons_group.add(boutoncoulissant3)
 boutons_group.add(boutoncliquant1)
+boutons_group.add(boutoncoulissant4)
 #############################################################
 
 def adapter_vitesse_voiture_genante():
@@ -65,7 +71,6 @@ def adapter_vitesse_voiture_genante():
     else:
         vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant1.valeur()))
     return vitesse_totale
-
 
 
 while 1:
@@ -81,13 +86,17 @@ while 1:
                 boutoncoulissant1.get_pressed(x)
             elif x > 960 and x < 1270 and y < 235 and y > 205: # Bouton nombre vehicules
                 boutoncoulissant2.get_pressed(x)
-                placer_vehicules(round(boutoncoulissant2.valeur()))
-            elif x > 960 and x < 992 and y < 290 and y > 260:  # Bouton vitesse globale
+                placer_vehicules(round(boutoncoulissant2.valeur()), boutoncoulissant4.valeur())
+            elif x > 960 and x < 992 and y < 290 and y > 260:  # Bouton activer vehicule genant
                 boutoncliquant1.get_pressed(x)
-            elif x > 960 and x < 1270 and y < 345 and y > 315:
+            elif x > 960 and x < 1270 and y < 345 and y > 315: # Bouton vitesse vehicule genant
                 boutoncoulissant3.get_pressed(x)
+            elif x > 960 and x < 1270 and y < 400 and y > 370: #Bouton diametre rond point:
+                boutoncoulissant4.get_pressed(x)
+                placer_vehicules(round(boutoncoulissant2.valeur()), boutoncoulissant4.valeur())
         if event.type == pygame.QUIT:
             sys.exit()
+    nombre_voitures_actuel = round((boutoncoulissant4.valeur() * 3.1419)/ 4.2*boutoncoulissant2.valeur()/100)
 
     screen.fill((0, 128, 0))
     pygame.draw.rect(screen, (96, 96, 96), input_rect)
@@ -102,8 +111,9 @@ while 1:
 
 
     #Design graphique du rond point#
-    pygame.draw.circle(screen, (255, 255, 255), (475, 400), 350)
-    pygame.draw.circle(screen, (0, 128, 0), (475, 400), 298)
+    circ_ajt = 468.54 * pow(boutoncoulissant4.valeur()*3.141/4.2, -0.9711)
+    pygame.draw.circle(screen, (255, 255, 255), (475, 400), 327 + circ_ajt)
+    pygame.draw.circle(screen, (0, 128, 0), (475, 400), 323 - circ_ajt)
     pygame.draw.arc(screen, (0, 0, 0), (150, 80, 650, 643), 0, 360)
     ################################
 
@@ -115,9 +125,9 @@ while 1:
     screen.blit(textVitesseGlobal, textRect3)
     #########################
 
-    #Bouton nombre vehicules#
+    #Bouton densité vehicules#
     pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(960, 205, 310, 30, width=300))
-    textVehiculeGlobal = fontText.render(f"Densité de vehicules({round(boutoncoulissant2.valeur())} vehicules)", True, (255, 255, 255), (96, 96, 96))
+    textVehiculeGlobal = fontText.render(f"Densité de vehicules({nombre_voitures_actuel} vehicules)", True, (255, 255, 255), (96, 96, 96))
     textRect4 = textVehiculeGlobal.get_rect()
     textRect4.center = (1120, 195)
     screen.blit(textVehiculeGlobal, textRect4)
@@ -137,6 +147,14 @@ while 1:
     textRect6 = textVitesseVehiculeGenant.get_rect()
     textRect6.center = (1120, 305)
     screen.blit(textVitesseVehiculeGenant, textRect6)
+    ########################
+
+    #Bouton diametre rond point#
+    pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(960, 370, 310, 30, width=300))
+    textDiametreRd = fontText.render(f"Diametre rond point({round(boutoncoulissant4.valeur())} m)", True,(255, 255, 255), (96, 96, 96))
+    textRect7 = textDiametreRd.get_rect()
+    textRect7.center = (1120, 360)
+    screen.blit(textDiametreRd, textRect7)
     ########################
 
 
@@ -168,12 +186,13 @@ while 1:
 
 
     ##Text Vitesse moyenne##
-    textVitesseMoyenne = fontText.render(f"Vitesse moyenne: {round(vitesse_totale/round(boutoncoulissant2.valeur()))}km/h", True, (255, 255, 255), (96, 96, 96))
+    textVitesseMoyenne = fontText.render(f"Vitesse moyenne: {round(vitesse_totale/nombre_voitures_actuel)}km/h", True, (255, 255, 255), (96, 96, 96))
     screen.blit(textVitesseMoyenne, (0,0))
     #######################
+    print(nombre_voitures_actuel)
 
     #####Text Remplissage#####
-    textRemplMoyen = fontText.render(f"Remplissage: {round(round(boutoncoulissant2.valeur())*4.11*100/82.5)}%", True, (255, 255, 255), (96, 96, 96))
+    textRemplMoyen = fontText.render(f"Remplissage: {round(boutoncoulissant2.valeur())}%", True, (255, 255, 255), (96, 96, 96))
     screen.blit(textRemplMoyen, (0, 14))
     ##########################
 

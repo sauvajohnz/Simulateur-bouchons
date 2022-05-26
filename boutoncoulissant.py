@@ -3,9 +3,10 @@ import pygame
 #y€[150,180] cad 30
 
 class BoutonCoulissant(pygame.sprite.Sprite):
-    def __init__(self, pos_y, valeur_max, valeur_init):
+    def __init__(self, pos_y, valeur_max, valeur_init, valeur_min = 1,):
         super().__init__()
         self.y = pos_y
+        self.valeur_min = valeur_min
         self.valeur_max = valeur_max
         self.pos_init = ((valeur_init*310)/valeur_max) + 960
         self.image = pygame.Surface([7, 25])
@@ -17,7 +18,7 @@ class BoutonCoulissant(pygame.sprite.Sprite):
         self.rect.center = [x, self.y]
 
     def valeur(self):
-        valeur = (self.rect[0] - 960)*self.valeur_max/310 #Règle de trois, permettant de renvoyer la valeur du bouton
+        valeur = ((self.rect[0] - 960)*self.valeur_max/310) + self.valeur_min #Règle de trois, permettant de renvoyer la valeur du bouton
         if valeur > 0 and str(valeur) != 'None':
             return valeur
         return 0
