@@ -16,7 +16,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
     def load_img(self):
         """Permet de load l'image en enlevant les bords blancs genants"""
         self.updatecolor()
-        img = pygame.image.load(f"spritevoiture_{self.couleur}.png")
+        img = pygame.image.load(f"images/spritevoiture_{self.couleur}.png")
         img.set_colorkey((255, 255, 255), pygame.RLEACCEL)
         img = img.convert_alpha()
         return img

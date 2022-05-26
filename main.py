@@ -4,14 +4,16 @@ from boutoncoulissant import BoutonCoulissant
 from boutoncliquant import BoutonCliquant
 pygame.init()
 
-
+###Mise en forme globale de l'application###
 size = width, hight = 1280, 800
 screen = pygame.display.set_mode(size)
 input_rect = pygame.Rect(950,0, 330, 800)
 pygame.display.set_caption('Simulateur bouchons')
-icon = pygame.image.load("icon.png")
+icon = pygame.image.load("images/icon.png")
 pygame.display.set_icon(icon)
 clock = pygame.time.Clock()
+diametre_rdpt = 26,10 #en mètre
+circ = diametre_rdpt*3,1419
 
 
 ####### Mise en forme du texte dans la section options ###
@@ -30,13 +32,12 @@ textRect2.center = (1120,30)
 
 
 #####################Ajout des sprites#######################
-#Les voitures(Fonction car on peut demander a changer le nombre de voitures)
+#Les voitures
 voiture_group = pygame.sprite.Group()
-voiture1 = SpriteVoiture(0)
-voiture_group.add(voiture1)
 voiture_init = 2 # Nbr de voitures au lancement du programme
 tableau_voitures = []
 def placer_vehicules(nbr):
+    "Fonction qui ajoute les voitures en fonction de la densitée demandée"
     voiture_group.empty()
     for i in range(nbr):
         voiture = SpriteVoiture((360/nbr)*(i))
@@ -57,6 +58,7 @@ boutons_group.add(boutoncliquant1)
 #############################################################
 
 def adapter_vitesse_voiture_genante():
+    "Fonction qui adapte la vitesse de la voiture genante, si le bouton l'activant est coché ou non"
     vitesse_totale = 0
     if boutoncliquant1.valeur() == True:
         vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()))
@@ -101,12 +103,12 @@ while 1:
 
     #Design graphique du rond point#
     pygame.draw.circle(screen, (255, 255, 255), (475, 400), 350)
-    pygame.draw.circle(screen, (0, 128, 0), (475, 400), 296)
+    pygame.draw.circle(screen, (0, 128, 0), (475, 400), 298)
     pygame.draw.arc(screen, (0, 0, 0), (150, 80, 650, 643), 0, 360)
     ################################
 
     #Bouton vitesse globale#
-    screen.blit(pygame.image.load("fond_vitesse_globale.png"), (960,150))
+    screen.blit(pygame.image.load("images/fond_vitesse_globale.png"), (960,150))
     textVitesseGlobal = fontText.render(f"Vitesse globale demandée({round(boutoncoulissant1.valeur())} km/h)", True, (255, 255, 255), (96, 96, 96))
     textRect3 = textVitesseGlobal.get_rect()
     textRect3.center = (1120, 140)
@@ -129,8 +131,8 @@ while 1:
     screen.blit(textVehiculeGenant, textRect5)
     ########################
 
-    # Bouton vitesse vehicule genant#
-    screen.blit(pygame.image.load("fond_vitesse_globale.png"), (960,315))
+    #Bouton vitesse vehicule genant#
+    screen.blit(pygame.image.load("images/fond_vitesse_globale.png"), (960,315))
     textVitesseVehiculeGenant = fontText.render(f"Vitesse du vehicule genant({round(boutoncoulissant3.valeur())} km/h)", True, (255, 255, 255), (96, 96, 96))
     textRect6 = textVitesseVehiculeGenant.get_rect()
     textRect6.center = (1120, 305)
