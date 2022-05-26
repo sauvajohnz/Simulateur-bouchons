@@ -46,7 +46,8 @@ def placer_vehicules(nbr_vehicules_pourcent, diametre):
         voiture = SpriteVoiture((360/nbr)*(i), diametre)
         voiture_group.add(voiture)
         tableau_voitures.append(voiture)
-placer_vehicules(voiture_init, diametre_init)
+placer_vehicules(voiture_init+10, diametre_init)
+
 
 #Les boutons
 boutons_group = pygame.sprite.Group()
@@ -56,12 +57,14 @@ boutoncoulissant3 = BoutonCoulissant(329.5, 40, 30, fond = "images/fond_vitesse_
 boutoncliquant1 = BoutonCliquant(274.5, False) #Activer vehicule genant
 boutoncoulissant4 = BoutonCoulissant(385.5, 180, diametre_init, valeur_min=10) #Diametre rond point
 boutoncoulissant5 = BoutonCoulissant(445.5, 400, 104.516) #Acceleration
+boutoncoulissant6 = BoutonCoulissant(505.5, 100, 0) # Variation vitesse
 boutons_group.add(boutoncoulissant1)
 boutons_group.add(boutoncoulissant2)
 boutons_group.add(boutoncoulissant3)
 boutons_group.add(boutoncliquant1)
 boutons_group.add(boutoncoulissant4)
 boutons_group.add(boutoncoulissant5)
+boutons_group.add(boutoncoulissant6)
 #############################################################
 
 def adapter_vitesse_voiture_genante():
@@ -72,6 +75,7 @@ def adapter_vitesse_voiture_genante():
     else:
         vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant1.valeur()))
     return vitesse_totale
+
 
 
 while 1:
@@ -127,12 +131,14 @@ while 1:
     screen.blit(textVehiculeGenant, textRect5)
     ########################
 
+    #Actualisation des valeurs des boutons#
     boutoncoulissant1.update(screen, f"Vitesse globale demandée({round(boutoncoulissant1.valeur())} km/h)")
     boutoncoulissant2.update(screen, f"Densité de vehicules({nombre_voitures_actuel} vehicules)")
     boutoncoulissant3.update(screen, f"Vitesse du vehicule genant({round(boutoncoulissant3.valeur())} km/h)")
     boutoncoulissant4.update(screen, f"Diametre rond point({round(boutoncoulissant4.valeur())} m)")
     boutoncoulissant5.update(screen, f"Accélerer ({round(boutoncoulissant5.valeur())}%)")
-
+    boutoncoulissant6.update(screen, f"Variation de vitesse ({round(boutoncoulissant6.valeur())}%)")
+    #####################################
 
     ###Ajout des sprites###
     voiture_group.draw(screen)
@@ -157,7 +163,10 @@ while 1:
         if tableau_voitures[0].collide(voitures_devant) == False: #Si il n'y a pas collision, on peut augmenter la vitesse
             vitesse_totale += adapter_vitesse_voiture_genante()
     else:
-        vitesse_totale += adapter_vitesse_voiture_genante()
+        if len(tableau_voitures) >= 1:
+            vitesse_totale += adapter_vitesse_voiture_genante()
+        else:
+            nombre_voitures_actuel = 1
     #####################
 
 
