@@ -88,12 +88,6 @@ class SpriteVoiture(pygame.sprite.Sprite):
             self.couleur = "vertclair"
         else:
             self.couleur = "vertfonce"
-        # 0-3km/h : rouge
-        # 3-8km/h : orange
-        # 8-15km/h : jaune
-        # 15-20 km/h: bleu
-        # 20-25 km/h: vert clair
-        # 25-40 km/h: vert foncé
     def collide(self, spriteGroup, temps):
         if pygame.sprite.spritecollide(self, spriteGroup, False):
             self.changevitesse(0, temps)

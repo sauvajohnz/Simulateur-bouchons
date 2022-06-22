@@ -3,6 +3,7 @@ from spritevoiture import SpriteVoiture
 from boutoncoulissant import BoutonCoulissant
 from boutoncliquant import BoutonCliquant
 from math import pow
+from random import randrange
 pygame.init()
 
 
@@ -47,6 +48,7 @@ def placer_vehicules(nbr_vehicules_pourcent, diametre):
         voiture = SpriteVoiture((360/nbr)*(i), diametre)
         voiture_group.add(voiture)
         tableau_voitures.append(voiture)
+
 placer_vehicules(voiture_init+10, diametre_init)
 
 
@@ -58,7 +60,7 @@ boutoncoulissant3 = BoutonCoulissant(329.5, 40, 30, fond = "images/fond_vitesse_
 boutoncliquant1 = BoutonCliquant(274.5, False) #Activer vehicule genant
 boutoncoulissant4 = BoutonCoulissant(385.5, 180, diametre_init, valeur_min=10) #Diametre rond point
 boutoncoulissant5 = BoutonCoulissant(445.5, 2000, 120.516) #Acceleration
-boutoncoulissant6 = BoutonCoulissant(505.5, 100, 0) # Variation vitesse
+boutoncoulissant6 = BoutonCoulissant(505.5, 20, 0) # Variation vitesse
 boutons_group.add(boutoncoulissant1)
 boutons_group.add(boutoncoulissant2)
 boutons_group.add(boutoncoulissant3)
@@ -76,6 +78,22 @@ def adapter_vitesse_voiture_genante():
     else:
         vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant1.valeur()), horloge_interne)
     return vitesse_totale
+
+def attribuer_variation_vitesse(vitesse_demandee, erreur, nbrvoit):
+    "Ajout une marge d'erreur sur la vitesse demandée pour chaque voiture"
+    vitesse_propre = []
+    for i in range(nbrvoit):
+        if int((erreur/100)*vitesse_demandee) != 0:
+            if randrange(0,2) == 1:
+                vitesse_propre.append(vitesse_demandee - int(randrange(0, int((erreur/100)*vitesse_demandee))))
+            else:
+                vitesse_propre.append(vitesse_demandee + int(randrange(0,int((erreur/100)*vitesse_demandee))))
+        else:
+            vitesse_propre.append(vitesse_demandee)
+    #print(vitesse_propre)
+    return vitesse_propre
+vitesse_propre = [30 for i in range(12)]
+
 
 #Horloge interne programme initialisation
 horloge_interne = 0
@@ -101,9 +119,11 @@ while 1:
             x, y = pygame.mouse.get_pos()
             if x > 960 and x < 1270 and y < 180 and y > 150:  # Bouton vitesse globale
                 boutoncoulissant1.get_pressed(x)
+                vitesse_propre = attribuer_variation_vitesse(round(boutoncoulissant1.valeur()), boutoncoulissant6.valeur(), round((boutoncoulissant4.valeur() * 3.141 / 4.2) * round(boutoncoulissant2.valeur()) / 100))
             elif x > 960 and x < 1270 and y < 235 and y > 205: # Bouton nombre vehicules
                 boutoncoulissant2.get_pressed(x)
                 placer_vehicules(round(boutoncoulissant2.valeur()), boutoncoulissant4.valeur())
+                vitesse_propre = attribuer_variation_vitesse(round(boutoncoulissant1.valeur()), boutoncoulissant6.valeur(), round((boutoncoulissant4.valeur() * 3.141 / 4.2) * round(boutoncoulissant2.valeur()) / 100))
             elif x > 960 and x < 992 and y < 290 and y > 260:  # Bouton activer vehicule genant
                 boutoncliquant1.get_pressed(x)
             elif x > 960 and x < 1270 and y < 345 and y > 315: # Bouton vitesse vehicule genant
@@ -111,8 +131,12 @@ while 1:
             elif x > 960 and x < 1270 and y < 400 and y > 370: #Bouton diametre rond point:
                 boutoncoulissant4.get_pressed(x)
                 placer_vehicules(round(boutoncoulissant2.valeur()), boutoncoulissant4.valeur())
+                vitesse_propre = attribuer_variation_vitesse(round(boutoncoulissant1.valeur()),boutoncoulissant6.valeur(),round((boutoncoulissant4.valeur()*3.141/4.2)*round(boutoncoulissant2.valeur())/100))
             elif x > 960 and x < 1270 and y < 460 and y > 430:  # Bouton accélerer
                 boutoncoulissant5.get_pressed(x)
+            elif x > 960 and x < 1270 and y < 520 and y > 490:  # Bouton accélerer
+                boutoncoulissant6.get_pressed(x)
+                vitesse_propre = attribuer_variation_vitesse(round(boutoncoulissant1.valeur()), boutoncoulissant6.valeur(), round((boutoncoulissant4.valeur() * 3.141 / 4.2) * round(boutoncoulissant2.valeur()) / 100))
         if event.type == pygame.QUIT:
             sys.exit()
     nombre_voitures_actuel = round((boutoncoulissant4.valeur() * 3.1419)/ 4.2*boutoncoulissant2.valeur()/100)
@@ -170,7 +194,7 @@ while 1:
         voitures_devant.empty()
         voitures_devant.add(tableau_voitures[i])
         if tableau_voitures[i+1].collide(voitures_devant, horloge_interne) == False:
-            vitesse_totale += tableau_voitures[i+1].changevitesse(round(boutoncoulissant1.valeur()), horloge_interne)
+            vitesse_totale += tableau_voitures[i+1].changevitesse(vitesse_propre[i], horloge_interne)
     voitures_devant.empty() #On regarde si le premier vehicule rentre en collision avec le dernier
     if len(tableau_voitures) > 2:
         voitures_devant.add(tableau_voitures[len(tableau_voitures)- 1])
