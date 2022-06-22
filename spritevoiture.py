@@ -2,7 +2,6 @@ import pygame, math
 
 r = 323  # rayon du cercle en pixel sur l'application
 
-
 class SpriteVoiture(pygame.sprite.Sprite):
     def __init__(self, phase, diametre):
         super().__init__()
@@ -14,6 +13,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
         self.phase = phase/57.3 # Phase par rapport aux autres voitures(Seulement pour le départ)
         self.image = self.load_img()
         self.rect = self.image.get_rect()
+        self.lastcall = 0 #Pour savoir quand est ce qu'est la derniere fois qu'on a demander à changer la vitesse
 
     def load_img(self):
         """Permet de load l'image en enlevant les bords blancs genants"""
@@ -40,34 +40,33 @@ class SpriteVoiture(pygame.sprite.Sprite):
         self.image = pygame.transform.rotate(img, 270 - angle)
         self.rect = self.image.get_rect(center=self.rect.center)
 
-    def update(self):
+    def update(self, t):
         # On fait avancer la voiture
         x = self.rect.center[0]
         y = self.rect.center[1]
         self.rot_img(x, y)
         clock = pygame.time.Clock()
         # print(x,y)
-        t = pygame.time.get_ticks() / 1000
-        w = self.vitesse * 2 / (self.diametre * 3.6 )
+        w = ((self.vitesse*2)/3.6) / (self.diametre)
         # Calcul de la position en fonction du temps et de la vitesse
         x = r * math.cos(-w * t + self.retard + self.phase) + 475
         y = 400 - (r * math.sin(-w * t + self.retard + self.phase))
         self.rect.center = [x, y]
 
-    def changevitesse(self, vitesse):
+    def changevitesse(self, vitesse, temps):
         "modifier la vitesse de la voiture"
+        lastcall = self.lastcall
+        self.lastcall = temps
+        delta_tmps = (temps - lastcall)
         if vitesse >= 0 and vitesse != self.vitesse:
             if self.vitesse >= vitesse:
-                self.retard -= (2 * pygame.time.get_ticks() / (1000 * self.diametre * 3.6))*(self.vitesse - vitesse)
+                self.retard -= (2 * temps / (self.diametre))*((self.vitesse - vitesse)/3.6)
             else:
-                if self.vitesse <= 5:
-                    vitesse = self.vitesse +0.1
-                elif self.vitesse <= 10:
-                    vitesse = self.vitesse +0.3
-                elif self.vitesse <= 25:
-                    vitesse = self.vitesse + 0.6
-
-                self.retard += (2 * pygame.time.get_ticks() / (1000 * self.diametre * 3.6))*(vitesse - self.vitesse)
+                if (vitesse - self.vitesse) > 3:
+                    vitesse = self.vitesse + 10.8*delta_tmps #10.8 étant la norme d'acceleration
+                else:
+                    vitesse = self.vitesse + (vitesse - self.vitesse)*delta_tmps
+                self.retard += (2 * temps / (self.diametre))*((vitesse - self.vitesse)/3.6)
             self.vitesse = vitesse
             return int(self.vitesse)
         return vitesse
@@ -95,8 +94,8 @@ class SpriteVoiture(pygame.sprite.Sprite):
         # 15-20 km/h: bleu
         # 20-25 km/h: vert clair
         # 25-40 km/h: vert foncé
-    def collide(self, spriteGroup):
+    def collide(self, spriteGroup, temps):
         if pygame.sprite.spritecollide(self, spriteGroup, False):
-            self.changevitesse(0)
+            self.changevitesse(0, temps)
             return True
         return False

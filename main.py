@@ -6,6 +6,7 @@ from math import pow
 pygame.init()
 
 
+
 ###Mise en forme globale de l'application###
 size = width, hight = 1280, 800
 screen = pygame.display.set_mode(size)
@@ -56,7 +57,7 @@ boutoncoulissant2 = BoutonCoulissant(219.5, 100, voiture_init) #Densité vehicul
 boutoncoulissant3 = BoutonCoulissant(329.5, 40, 30, fond = "images/fond_vitesse_globale.png") #Vitesse vehicule genant
 boutoncliquant1 = BoutonCliquant(274.5, False) #Activer vehicule genant
 boutoncoulissant4 = BoutonCoulissant(385.5, 180, diametre_init, valeur_min=10) #Diametre rond point
-boutoncoulissant5 = BoutonCoulissant(445.5, 400, 104.516) #Acceleration
+boutoncoulissant5 = BoutonCoulissant(445.5, 2000, 120.516) #Acceleration
 boutoncoulissant6 = BoutonCoulissant(505.5, 100, 0) # Variation vitesse
 boutons_group.add(boutoncoulissant1)
 boutons_group.add(boutoncoulissant2)
@@ -71,14 +72,25 @@ def adapter_vitesse_voiture_genante():
     "Fonction qui adapte la vitesse de la voiture genante, si le bouton l'activant est coché ou non"
     vitesse_totale = 0
     if boutoncliquant1.valeur() == True:
-        vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()))
+        vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant3.valeur()), horloge_interne)
     else:
-        vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant1.valeur()))
+        vitesse_totale += tableau_voitures[0].changevitesse(round(boutoncoulissant1.valeur()), horloge_interne)
     return vitesse_totale
 
+#Horloge interne programme initialisation
+horloge_interne = 0
+horloge_pygame = 0
 
 
 while 1:
+    #Pour l'acceleration du programme, nous souhaitons modifier artificiellement l'horloge interne du programme
+    #(ex: 10 secondes de programmes s'écoulent en 1s dans la vraie vie), on base donc l'horloge artificelle par rapport à la
+    #vraie horloge, a laquel nous ajoutons un facteur multiplicatif
+    diff_horloges = (pygame.time.get_ticks()/1000) - horloge_pygame #On regarde combiens de temps s'est écoulé depuis le retour a la boucle
+    horloge_pygame = pygame.time.get_ticks()/1000 #On actualise la vraie horloge
+    horloge_interne += diff_horloges*(boutoncoulissant5.valeur()/100) #L'horloge interne est le temps passé, multiplié par le facteur d'acceleration
+
+
     for event in pygame.event.get():
         #print(event)
         if event.type == pygame.KEYDOWN:
@@ -99,6 +111,8 @@ while 1:
             elif x > 960 and x < 1270 and y < 400 and y > 370: #Bouton diametre rond point:
                 boutoncoulissant4.get_pressed(x)
                 placer_vehicules(round(boutoncoulissant2.valeur()), boutoncoulissant4.valeur())
+            elif x > 960 and x < 1270 and y < 460 and y > 430:  # Bouton accélerer
+                boutoncoulissant5.get_pressed(x)
         if event.type == pygame.QUIT:
             sys.exit()
     nombre_voitures_actuel = round((boutoncoulissant4.valeur() * 3.1419)/ 4.2*boutoncoulissant2.valeur()/100)
@@ -142,7 +156,7 @@ while 1:
 
     ###Ajout des sprites###
     voiture_group.draw(screen)
-    voiture_group.update()
+    voiture_group.update(horloge_interne)
     boutons_group.draw(screen)
     #####################
 
@@ -155,12 +169,12 @@ while 1:
     for i in range(len(tableau_voitures)-1):
         voitures_devant.empty()
         voitures_devant.add(tableau_voitures[i])
-        if tableau_voitures[i+1].collide(voitures_devant) == False:
-            vitesse_totale += tableau_voitures[i+1].changevitesse(round(boutoncoulissant1.valeur()))
+        if tableau_voitures[i+1].collide(voitures_devant, horloge_interne) == False:
+            vitesse_totale += tableau_voitures[i+1].changevitesse(round(boutoncoulissant1.valeur()), horloge_interne)
     voitures_devant.empty() #On regarde si le premier vehicule rentre en collision avec le dernier
     if len(tableau_voitures) > 2:
         voitures_devant.add(tableau_voitures[len(tableau_voitures)- 1])
-        if tableau_voitures[0].collide(voitures_devant) == False: #Si il n'y a pas collision, on peut augmenter la vitesse
+        if tableau_voitures[0].collide(voitures_devant, horloge_interne) == False: #Si il n'y a pas collision, on peut augmenter la vitesse
             vitesse_totale += adapter_vitesse_voiture_genante()
     else:
         if len(tableau_voitures) >= 1:
@@ -169,16 +183,15 @@ while 1:
             nombre_voitures_actuel = 1
     #####################
 
-
-    ##Text Vitesse moyenne##
+    #####TEXT INFO EN HAUT A GAUCHE###
+    #Vitesse moyenne
     textVitesseMoyenne = fontText.render(f"Vitesse moyenne: {round(vitesse_totale/nombre_voitures_actuel)}km/h", True, (255, 255, 255), (96, 96, 96))
     screen.blit(textVitesseMoyenne, (0,0))
-    #######################
 
-    #####Text Remplissage#####
+    #Remplissage
     textRemplMoyen = fontText.render(f"Remplissage: {round(boutoncoulissant2.valeur())}%", True, (255, 255, 255), (96, 96, 96))
     screen.blit(textRemplMoyen, (0, 14))
-    ##########################
+    ##############################
 
 
     pygame.display.flip()
