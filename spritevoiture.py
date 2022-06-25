@@ -51,6 +51,7 @@ class SpriteVoiture(pygame.sprite.Sprite):
         # Calcul de la position en fonction du temps et de la vitesse
         x = r * math.cos(-w * t + self.retard + self.phase) + 475
         y = 400 - (r * math.sin(-w * t + self.retard + self.phase))
+        #print(self.position(t))
         self.rect.center = [x, y]
 
     def changevitesse(self, vitesse, temps):
@@ -58,21 +59,32 @@ class SpriteVoiture(pygame.sprite.Sprite):
         lastcall = self.lastcall
         self.lastcall = temps
         delta_tmps = (temps - lastcall)
-        if vitesse >= 0 and vitesse != self.vitesse:
-            if self.vitesse >= vitesse:
+        if vitesse > 0 and vitesse != self.vitesse:
+            if self.vitesse >= vitesse: ###DECCELERATION
+                if (self.vitesse - vitesse) > 3:
+                    vitesse = self.vitesse - 20.8*delta_tmps #10.8 étant la norme de decceleration
+                else:
+                    vitesse = self.vitesse - (self.vitesse - vitesse)*delta_tmps
                 self.retard -= (2 * temps / (self.diametre))*((self.vitesse - vitesse)/3.6)
-            else:
+            else: ###ACCELERATION
                 if (vitesse - self.vitesse) > 3:
                     vitesse = self.vitesse + 10.8*delta_tmps #10.8 étant la norme d'acceleration
                 else:
                     vitesse = self.vitesse + (vitesse - self.vitesse)*delta_tmps
                 self.retard += (2 * temps / (self.diametre))*((vitesse - self.vitesse)/3.6)
             self.vitesse = vitesse
+        else:
+            self.retard -= (2 * temps / (self.diametre)) * (self.vitesse / 3.6)
+            self.vitesse = 0
             return int(self.vitesse)
         return vitesse
     def checkvitesse(self):
         "retourne la valeur de la vitesse de la voiture"
         return self.vitesse
+
+    def position(self, t):
+        w = ((self.vitesse * 2) / 3.6) / (self.diametre)
+        return -(-w * t + self.retard + self.phase)*57.3
 
     def updatecolor(self):
         "change la couleur de la voiture en fonction de sa vitesse"

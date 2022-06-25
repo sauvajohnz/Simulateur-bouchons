@@ -69,6 +69,10 @@ boutons_group.add(boutoncoulissant4)
 boutons_group.add(boutoncoulissant5)
 boutons_group.add(boutoncoulissant6)
 #############################################################
+def distance_voit(angle_voit1, angle_voit2, rab = 0):
+    "Calcule la distance entre deux voitures"
+    diff_angle = (angle_voit2 + rab - angle_voit1)
+    return (diff_angle/360)*round(boutoncoulissant4.valeur())*3.14
 
 def adapter_vitesse_voiture_genante():
     "Fonction qui adapte la vitesse de la voiture genante, si le bouton l'activant est coché ou non"
@@ -123,6 +127,7 @@ while 1:
             elif x > 960 and x < 1270 and y < 235 and y > 205: # Bouton nombre vehicules
                 boutoncoulissant2.get_pressed(x)
                 placer_vehicules(round(boutoncoulissant2.valeur()), boutoncoulissant4.valeur())
+                horloge_interne = 0
                 vitesse_propre = attribuer_variation_vitesse(round(boutoncoulissant1.valeur()), boutoncoulissant6.valeur(), round((boutoncoulissant4.valeur() * 3.141 / 4.2) * round(boutoncoulissant2.valeur()) / 100))
             elif x > 960 and x < 992 and y < 290 and y > 260:  # Bouton activer vehicule genant
                 boutoncliquant1.get_pressed(x)
@@ -130,6 +135,7 @@ while 1:
                 boutoncoulissant3.get_pressed(x)
             elif x > 960 and x < 1270 and y < 400 and y > 370: #Bouton diametre rond point:
                 boutoncoulissant4.get_pressed(x)
+                horloge_interne = 0
                 placer_vehicules(round(boutoncoulissant2.valeur()), boutoncoulissant4.valeur())
                 vitesse_propre = attribuer_variation_vitesse(round(boutoncoulissant1.valeur()),boutoncoulissant6.valeur(),round((boutoncoulissant4.valeur()*3.141/4.2)*round(boutoncoulissant2.valeur())/100))
             elif x > 960 and x < 1270 and y < 460 and y > 430:  # Bouton accélerer
@@ -194,12 +200,34 @@ while 1:
         voitures_devant.empty()
         voitures_devant.add(tableau_voitures[i])
         if tableau_voitures[i+1].collide(voitures_devant, horloge_interne) == False:
-            vitesse_totale += tableau_voitures[i+1].changevitesse(vitesse_propre[i], horloge_interne)
+            if distance_voit(tableau_voitures[i+1].position(horloge_interne), tableau_voitures[i].position(horloge_interne)) < 7.5:
+                if tableau_voitures[i].checkvitesse() == 0:
+                    if horloge_interne > 1:
+                        vitesse_totale += tableau_voitures[i + 1].changevitesse(1, horloge_interne)
+                    else:
+                        vitesse_totale += tableau_voitures[i + 1].changevitesse(0, horloge_interne)
+                else:
+                    vitesse_totale += tableau_voitures[i+1].changevitesse(tableau_voitures[i].checkvitesse(), horloge_interne)
+                #print(f"Proche !! nouvelle vitesse : {tableau_voitures[i+1].checkvitesse()}")
+            else:
+                vitesse_totale += tableau_voitures[i + 1].changevitesse(vitesse_propre[i], horloge_interne)
     voitures_devant.empty() #On regarde si le premier vehicule rentre en collision avec le dernier
     if len(tableau_voitures) > 2:
         voitures_devant.add(tableau_voitures[len(tableau_voitures)- 1])
         if tableau_voitures[0].collide(voitures_devant, horloge_interne) == False: #Si il n'y a pas collision, on peut augmenter la vitesse
-            vitesse_totale += adapter_vitesse_voiture_genante()
+            if distance_voit(tableau_voitures[0].position(horloge_interne), tableau_voitures[len(tableau_voitures) - 1].position(horloge_interne), rab=360) < 7.5:
+                if tableau_voitures[len(tableau_voitures) - 1].checkvitesse() == 0:
+                    if horloge_interne > 1:
+                        vitesse_totale += tableau_voitures[0].changevitesse(1, horloge_interne)
+                    else:
+                        vitesse_totale += tableau_voitures[0].changevitesse(0, horloge_interne)
+                else:
+                    vitesse_totale += tableau_voitures[0].changevitesse(tableau_voitures[len(tableau_voitures) - 1].checkvitesse(), horloge_interne)
+                #print(f"Proche !! nouvelle vitesse : {tableau_voitures[0].checkvitesse()}")
+            else:
+                vitesse_totale += adapter_vitesse_voiture_genante()
+        else:
+            print("boom")
     else:
         if len(tableau_voitures) >= 1:
             vitesse_totale += adapter_vitesse_voiture_genante()
